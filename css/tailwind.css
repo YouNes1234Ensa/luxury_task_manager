@@ -1,0 +1,259 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Primary Colors */
+  --color-primary: #D1B280; /* camel leather */
+  --color-primary-50: #FAF8F4;
+  --color-primary-100: #F4F0E8;
+  --color-primary-200: #E8DCC8;
+  --color-primary-300: #DCC8A8;
+  --color-primary-400: #D1B280;
+  --color-primary-500: #C5A670;
+  --color-primary-600: #B99A60;
+  --color-primary-700: #A68850;
+  --color-primary-800: #937640;
+  --color-primary-900: #806430;
+
+  /* Secondary Colors */
+  --color-secondary: #0A192F; /* deep navy */
+  --color-secondary-50: #F0F2F5;
+  --color-secondary-100: #E1E6EB;
+  --color-secondary-200: #C3CDD7;
+  --color-secondary-300: #A5B4C3;
+  --color-secondary-400: #879BAF;
+  --color-secondary-500: #69829B;
+  --color-secondary-600: #4B6987;
+  --color-secondary-700: #2D5073;
+  --color-secondary-800: #1A3A5F;
+  --color-secondary-900: #0A192F;
+
+  /* Accent Colors */
+  --color-accent: #D4AF37; /* rich gold */
+  --color-accent-50: #FDFBF4;
+  --color-accent-100: #FAF6E9;
+  --color-accent-200: #F5EDD3;
+  --color-accent-300: #F0E4BD;
+  --color-accent-400: #EBDBA7;
+  --color-accent-500: #E6D291;
+  --color-accent-600: #E1C97B;
+  --color-accent-700: #DCC065;
+  --color-accent-800: #D7B74F;
+  --color-accent-900: #D4AF37;
+
+  /* Background Colors */
+  --color-background: #FFFFF0; /* warm ivory */
+  --color-surface: #F8F6F0; /* subtle off-white */
+
+  /* Text Colors */
+  --color-text-primary: #2C3E50; /* charcoal gray */
+  --color-text-secondary: #6B7280; /* medium gray */
+
+  /* Status Colors */
+  --color-success: #10B981; /* emerald green */
+  --color-success-50: #ECFDF5;
+  --color-success-100: #D1FAE5;
+  --color-success-200: #A7F3D0;
+  --color-success-300: #6EE7B7;
+  --color-success-400: #34D399;
+  --color-success-500: #10B981;
+  --color-success-600: #059669;
+  --color-success-700: #047857;
+  --color-success-800: #065F46;
+  --color-success-900: #064E3B;
+
+  --color-warning: #F59E0B; /* topaz amber */
+  --color-warning-50: #FFFBEB;
+  --color-warning-100: #FEF3C7;
+  --color-warning-200: #FDE68A;
+  --color-warning-300: #FCD34D;
+  --color-warning-400: #FBBF24;
+  --color-warning-500: #F59E0B;
+  --color-warning-600: #D97706;
+  --color-warning-700: #B45309;
+  --color-warning-800: #92400E;
+  --color-warning-900: #78350F;
+
+  --color-error: #800020; /* deep burgundy */
+  --color-error-50: #FDF2F8;
+  --color-error-100: #FCE7F3;
+  --color-error-200: #FBCFE8;
+  --color-error-300: #F9A8D4;
+  --color-error-400: #F472B6;
+  --color-error-500: #EC4899;
+  --color-error-600: #DB2777;
+  --color-error-700: #BE185D;
+  --color-error-800: #9D174D;
+  --color-error-900: #800020;
+
+  /* Border Colors */
+  --color-border: #E5E7EB; /* muted tone */
+  --color-border-light: #F3F4F6;
+
+  /* Shadow Colors */
+  --shadow-warm: rgba(209, 178, 128, 0.15);
+  --shadow-warm-lg: rgba(209, 178, 128, 0.25);
+}
+
+/* Glass-morphism utilities */
+.glass-morphism {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: rgba(255, 255, 240, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-morphism-dark {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: rgba(10, 25, 47, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Luxury shadows */
+.shadow-luxury {
+  box-shadow: 0 4px 20px var(--shadow-warm);
+}
+
+.shadow-luxury-lg {
+  box-shadow: 0 8px 32px var(--shadow-warm-lg);
+}
+
+.shadow-luxury-xl {
+  box-shadow: 0 12px 48px var(--shadow-warm-lg);
+}
+
+/* Micro-interaction utilities */
+.micro-interaction {
+  transition: all 200ms ease-out;
+}
+
+.micro-interaction:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 32px var(--shadow-warm-lg);
+}
+
+/* Gemstone priority indicators */
+.gem-high {
+  background: linear-gradient(135deg, #800020 0%, #A0002A 50%, #800020 100%);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    0 2px 4px rgba(128, 0, 32, 0.3);
+}
+
+.gem-medium {
+  background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 50%, #F59E0B 100%);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    0 2px 4px rgba(245, 158, 11, 0.3);
+}
+
+.gem-low {
+  background: linear-gradient(135deg, #10B981 0%, #34D399 50%, #10B981 100%);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    0 2px 4px rgba(16, 185, 129, 0.3);
+}
+
+/* Gradient morphing backgrounds */
+.gradient-warm {
+  background: linear-gradient(135deg, #FFFFF0 0%, #F8F6F0 100%);
+  transition: background 300ms ease-in-out;
+}
+
+.gradient-luxury {
+  background: linear-gradient(135deg, #D1B280 0%, #C5A670 50%, #B99A60 100%);
+  transition: background 300ms ease-in-out;
+}
+
+.gradient-sophisticated {
+  background: linear-gradient(135deg, #0A192F 0%, #1A3A5F 50%, #2D5073 100%);
+  transition: background 300ms ease-in-out;
+}
+
+/* Confetti animation */
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background: var(--color-accent);
+  animation: confetti-fall 3s ease-out forwards;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.confetti:nth-child(odd) {
+  background: var(--color-success);
+  animation-duration: 2.5s;
+}
+
+.confetti:nth-child(3n) {
+  background: var(--color-warning);
+  animation-duration: 3.5s;
+}
+
+/* Luxury spacing utilities */
+.spacing-luxury-xs { padding: clamp(0.5rem, 2vw, 0.75rem); }
+.spacing-luxury-sm { padding: clamp(0.75rem, 3vw, 1rem); }
+.spacing-luxury-md { padding: clamp(1rem, 4vw, 1.5rem); }
+.spacing-luxury-lg { padding: clamp(1.5rem, 6vw, 2rem); }
+.spacing-luxury-xl { padding: clamp(2rem, 8vw, 3rem); }
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-600);
+}
+
+/* Focus styles */
+.focus-luxury:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(209, 178, 128, 0.3);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .micro-interaction,
+  .gradient-warm,
+  .gradient-luxury,
+  .gradient-sophisticated {
+    transition: none;
+  }
+  
+  .confetti {
+    animation: none;
+    display: none;
+  }
+}

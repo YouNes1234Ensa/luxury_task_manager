@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings & Theme Customization - Luxury Task Manager</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <style>
+        /* Custom animations and luxury effects */
+        @keyframes slideInRight {
+            0% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            0% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        @keyframes pulseConfirm {
+            0%, 100% { 
+                transform: scale(1); 
+                box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); 
+            }
+            50% { 
+                transform: scale(1.02); 
+                box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5); 
+            }
+        }
+
+        @keyframes gemSparkle {
+            0%, 100% { 
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+            }
+            50% { 
+                box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4), 
+                           inset 0 2px 4px rgba(255,255,255,0.3); 
+            }
+        }
+
+        @keyframes gradientMorph {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .slide-in-right {
+            animation: slideInRight 0.4s ease-out;
+        }
+
+        .slide-out-right {
+            animation: slideOutRight 0.4s ease-in;
+        }
+
+        .pulse-confirm {
+            animation: pulseConfirm 0.6s ease-in-out;
+        }
+
+        .gem-sparkle {
+            animation: gemSparkle 2s ease-in-out infinite;
+        }
+
+        .gradient-morph {
+            background: linear-gradient(-45deg, #D1B280, #C5A670, #B99A60, #A68850);
+            background-size: 400% 400%;
+            animation: gradientMorph 4s ease-in-out infinite;
+        }
+
+        .settings-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100vh;
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255, 255, 240, 0.95);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(209, 178, 128, 0.3);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .settings-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .theme-swatch {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 300ms ease-in-out;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid transparent;
+        }
+
+        .theme-swatch::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            width: 25%;
+            height: 25%;
+            background: rgba(255,255,255,0.4);
+            border-radius: 50%;
+            transform: rotate(45deg);
+        }
+
+        .theme-swatch::after {
+            content: '';
+            position: absolute;
+            top: 60%;
+            right: 20%;
+            width: 15%;
+            height: 15%;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+        }
+
+        .theme-swatch:hover {
+            transform: translateY(-5px) scale(1.05);
+            animation: gemSparkle 1s ease-in-out infinite;
+        }
+
+        .theme-camel { 
+            background: linear-gradient(135deg, #D1B280 0%, #C5A670 50%, #B99A60 100%);
+        }
+        .theme-navy { 
+            background: linear-gradient(135deg, #0A192F 0%, #1A3A5F 50%, #2D5073 100%);
+        }
+        .theme-burgundy { 
+            background: linear-gradient(135deg, #800020 0%, #9D174D 50%, #BE185D 100%);
+        }
+        .theme-charcoal { 
+            background: linear-gradient(135deg, #2C3E50 0%, #34495E 50%, #3A4A5C 100%);
+        }
+
+        .theme-selected {
+            border-color: #D4AF37;
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.6);
+            transform: scale(1.1);
+        }
+
+        .luxury-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: linear-gradient(135deg, #E5E7EB 0%, #D1D5DB 100%);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 300ms ease-in-out;
+        }
+
+        .luxury-switch.active {
+            background: linear-gradient(135deg, #D4AF37 0%, #E1C97B 100%);
+        }
+
+        .luxury-switch::before {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: all 300ms ease-in-out;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .luxury-switch.active::before {
+            transform: translateX(30px);
+        }
+
+        .volume-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: linear-gradient(135deg, #E5E7EB 0%, #D1D5DB 100%);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #D4AF37 0%, #E1C97B 100%);
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 200ms ease-out;
+        }
+
+        .volume-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 8px rgba(212, 175, 55, 0.4);
+        }
+
+        .velvet-input {
+            background: linear-gradient(135deg, rgba(255,255,240,0.9) 0%, rgba(248,246,240,0.9) 100%);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+        }
+
+        .velvet-input::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #D1B280, #C5A670, #B99A60);
+            border-radius: inherit;
+            z-index: -1;
+        }
+
+        .parchment-dialog {
+            background: linear-gradient(135deg, #F8F6F0 0%, #F4F0E8 100%);
+            border: 2px solid #D1B280;
+            position: relative;
+        }
+
+        .parchment-dialog::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1px dashed rgba(209, 178, 128, 0.5);
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        .luxury-button {
+            background: linear-gradient(135deg, #D4AF37 0%, #E1C97B 50%, #D4AF37 100%);
+            background-size: 200% 200%;
+            transition: all 300ms ease-in-out;
+        }
+
+        .luxury-button:hover {
+            background-position: right center;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+        }
+
+        .danger-button {
+            background: linear-gradient(135deg, #800020 0%, #9D174D 50%, #800020 100%);
+            background-size: 200% 200%;
+        }
+
+        .danger-button:hover {
+            background-position: right center;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(128, 0, 32, 0.4);
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #0A192F 0%, #1A3A5F 100%);
+        }
+
+        .dark-mode .settings-panel {
+            background: rgba(10, 25, 47, 0.95);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dark-mode .glass-morphism {
+            background: rgba(10, 25, 47, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dark-mode .velvet-input {
+            background: linear-gradient(135deg, rgba(10,25,47,0.9) 0%, rgba(26,58,95,0.9) 100%);
+            color: #FFFFF0;
+        }
+
+        .dark-mode .parchment-dialog {
+            background: linear-gradient(135deg, #1A3A5F 0%, #2D5073 100%);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        @media (min-width: 768px) {
+            .settings-panel {
+                position: relative;
+                height: auto;
+                max-width: none;
+                width: 100%;
+                background: transparent;
+                backdrop-filter: none;
+                border: none;
+            }
+        }
+    </style>
+<script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fluxurytas8625back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.5"></script>
+</head>
+<body class="min-h-screen gradient-warm font-body">
+    <!-- Settings Overlay (Mobile) -->
+    <div id="settingsOverlay" class="settings-overlay md:hidden" onclick="closeSettings()" style="display: none;"></div>
+
+    <!-- Settings Panel -->
+    <div id="settingsPanel" class="settings-panel slide-in-right">
+        <!-- Header -->
+        <div class="p-6 border-b border-primary/20">
+            <div class="flex items-center justify-between mb-4">
+                <h1 class="font-heading text-luxury-2xl font-bold text-textPrimary">
+                    Personalize Your Experience
+                </h1>
+                <button onclick="closeSettings()" class="md:hidden p-2 rounded-luxury hover:bg-primary/10 transition-colors">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 6L6 18M6 6l12 12" stroke="#2C3E50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-accent-600 flex items-center justify-center">
+                    <span id="userInitial" class="text-white font-semibold">J</span>
+                </div>
+                <div>
+                    <p class="text-textPrimary font-medium" id="welcomeUser">Welcome, John</p>
+                    <p class="text-textSecondary text-luxury-sm">Customize your workspace</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Content -->
+        <div class="p-6 space-y-8">
+            <!-- Theme Selection -->
+            <div class="glass-morphism rounded-luxury-lg p-6">
+                <h2 class="font-heading text-luxury-xl font-semibold text-textPrimary mb-4 flex items-center gap-2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="3" stroke="#D4AF37" stroke-width="2"/>
+                        <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24" stroke="#D4AF37" stroke-width="2"/>
+                    </svg>
+                    Theme Selection
+                </h2>
+                <p class="text-textSecondary text-luxury-sm mb-6">Choose your preferred color palette</p>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="text-center">
+                        <div class="theme-swatch theme-camel mx-auto mb-2" data-theme="camel" onclick="selectTheme('camel')" title="Camel Leather"></div>
+                        <span class="text-luxury-sm text-textSecondary">Camel</span>
+                    </div>
+                    <div class="text-center">
+                        <div class="theme-swatch theme-navy mx-auto mb-2" data-theme="navy" onclick="selectTheme('navy')" title="Deep Navy"></div>
+                        <span class="text-luxury-sm text-textSecondary">Navy</span>
+                    </div>
+                    <div class="text-center">
+                        <div class="theme-swatch theme-burgundy mx-auto mb-2" data-theme="burgundy" onclick="selectTheme('burgundy')" title="Rich Burgundy"></div>
+                        <span class="text-luxury-sm text-textSecondary">Burgundy</span>
+                    </div>
+                    <div class="text-center">
+                        <div class="theme-swatch theme-charcoal mx-auto mb-2" data-theme="charcoal" onclick="selectTheme('charcoal')" title="Charcoal Gray"></div>
+                        <span class="text-luxury-sm text-textSecondary">Charcoal</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dark/Light Mode Toggle -->
+            <div class="glass-morphism rounded-luxury-lg p-6">
+                <h2 class="font-heading text-luxury-xl font-semibold text-textPrimary mb-4 flex items-center gap-2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="#D4AF37" stroke-width="2"/>
+                    </svg>
+                    Display Mode
+                </h2>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-textPrimary font-medium">Dark Mode</p>
+                        <p class="text-textSecondary text-luxury-sm">Switch between light and dark themes</p>
+                    </div>
+                    <div class="luxury-switch" id="darkModeSwitch" onclick="toggleDarkMode()">
+                        <div class="flex items-center justify-center w-full h-full">
+                            <svg id="modeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="5" stroke="#6B7280" stroke-width="2"/>
+                                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="#6B7280" stroke-width="2"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sound Preferences -->
+            <div class="glass-morphism rounded-luxury-lg p-6">
+                <h2 class="font-heading text-luxury-xl font-semibold text-textPrimary mb-4 flex items-center gap-2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" stroke="#D4AF37" stroke-width="2"/>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" stroke="#D4AF37" stroke-width="2"/>
+                    </svg>
+                    Sound Preferences
+                </h2>
+                
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-textPrimary font-medium">Celebration Effects</p>
+                            <p class="text-textSecondary text-luxury-sm">Champagne pop sounds</p>
+                        </div>
+                        <div class="luxury-switch active" id="celebrationSwitch" onclick="toggleSound('celebration')"></div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-textPrimary font-medium">Interaction Sounds</p>
+                            <p class="text-textSecondary text-luxury-sm">Crystal ting & metal toggle</p>
+                        </div>
+                        <div class="luxury-switch active" id="interactionSwitch" onclick="toggleSound('interaction')"></div>
+                    </div>
+                    
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-textPrimary font-medium">Master Volume</p>
+                            <span id="volumeValue" class="text-textSecondary text-luxury-sm">80%</span>
+                        </div>
+                        <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="80" oninput="updateVolume(this.value)" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personal Information -->
+            <div class="glass-morphism rounded-luxury-lg p-6">
+                <h2 class="font-heading text-luxury-xl font-semibold text-textPrimary mb-4 flex items-center gap-2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="#D4AF37" stroke-width="2"/>
+                        <circle cx="12" cy="7" r="4" stroke="#D4AF37" stroke-width="2"/>
+                    </svg>
+                    Personal Information
+                </h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="displayName" class="block text-textPrimary font-medium mb-2">Display Name</label>
+                        <input type="text" id="displayName" value="John Doe" class="w-full px-4 py-3 velvet-input rounded-luxury text-textPrimary placeholder-textSecondary focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all duration-300" maxlength="30" oninput="updateDisplayName(this.value)" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Management -->
+            <div class="glass-morphism rounded-luxury-lg p-6">
+                <h2 class="font-heading text-luxury-xl font-semibold text-textPrimary mb-4 flex items-center gap-2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#D4AF37" stroke-width="2"/>
+                        <polyline points="14,2 14,8 20,8" stroke="#D4AF37" stroke-width="2"/>
+                        <line x1="16" y1="13" x2="8" y2="13" stroke="#D4AF37" stroke-width="2"/>
+                        <line x1="16" y1="17" x2="8" y2="17" stroke="#D4AF37" stroke-width="2"/>
+                        <polyline points="10,9 9,9 8,9" stroke="#D4AF37" stroke-width="2"/>
+                    </svg>
+                    Data Management
+                </h2>
+                
+                <div class="space-y-4">
+                    <button onclick="exportTasks()" class="w-full luxury-button text-white font-semibold py-3 px-6 rounded-luxury transition-all duration-300 flex items-center justify-center gap-2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/>
+                            <polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="2"/>
+                            <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        Export Tasks
+                    </button>
+                    
+                    <button onclick="showClearConfirmation()" class="w-full danger-button text-white font-semibold py-3 px-6 rounded-luxury transition-all duration-300 flex items-center justify-center gap-2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2"/>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="2"/>
+                            <line x1="10" y1="11" x2="10" y2="17" stroke="currentColor" stroke-width="2"/>
+                            <line x1="14" y1="11" x2="14" y2="17" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        Clear All Tasks
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="glass-morphism rounded-luxury-lg p-6">
+                <h2 class="font-heading text-luxury-xl font-semibold text-textPrimary mb-4 flex items-center gap-2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="#D4AF37" stroke-width="2"/>
+                        <polyline points="9 22 9 12 15 12 15 22" stroke="#D4AF37" stroke-width="2"/>
+                    </svg>
+                    Navigation
+                </h2>
+                
+                <div class="space-y-3">
+                    <a href="main_task_management_dashboard.html" class="block w-full text-left px-4 py-3 rounded-luxury bg-primary/10 hover:bg-primary/20 text-textPrimary transition-colors duration-300 flex items-center gap-3">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2zM21 11h-4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2zM9 3H5a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM21 3h-4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        Task Dashboard
+                    </a>
+                    
+                    <a href="task_creation_priority_selection_modal.html" class="block w-full text-left px-4 py-3 rounded-luxury bg-primary/10 hover:bg-primary/20 text-textPrimary transition-colors duration-300 flex items-center gap-3">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <line x1="12" y1="8" x2="12" y2="16" stroke="currentColor" stroke-width="2"/>
+                            <line x1="8" y1="12" x2="16" y2="12" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        Create New Task
+                    </a>
+                    
+                    <a href="welcome_personalization_screen.html" class="block w-full text-left px-4 py-3 rounded-luxury bg-primary/10 hover:bg-primary/20 text-textPrimary transition-colors duration-300 flex items-center gap-3">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        Welcome Screen
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="p-6 border-t border-primary/20 text-center">
+            <p class="text-textSecondary text-luxury-sm">
+                © 2025 Luxury Task Manager. Crafted with excellence.
+            </p>
+        </div>
+    </div>
+
+    <!-- Clear Confirmation Dialog -->
+    <div id="clearConfirmDialog" class="fixed inset-0 bg-black/50 flex items-center justify-center z-[1001] hidden">
+        <div class="parchment-dialog rounded-luxury-lg p-8 m-4 max-w-md w-full">
+            <div class="text-center">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-error/10 flex items-center justify-center">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10" stroke="#800020" stroke-width="2"/>
+                        <line x1="15" y1="9" x2="9" y2="15" stroke="#800020" stroke-width="2"/>
+                        <line x1="9" y1="9" x2="15" y2="15" stroke="#800020" stroke-width="2"/>
+                    </svg>
+                </div>
+                <h3 class="font-heading text-luxury-xl font-semibold text-textPrimary mb-2">Clear All Tasks?</h3>
+                <p class="text-textSecondary mb-6">This action cannot be undone. All your tasks will be permanently deleted.</p>
+                
+                <div class="flex gap-3">
+                    <button onclick="hideClearConfirmation()" class="flex-1 px-4 py-3 rounded-luxury border border-primary text-textPrimary hover:bg-primary/10 transition-colors duration-300">
+                        Cancel
+                    </button>
+                    <button onclick="confirmClearTasks()" class="flex-1 danger-button text-white px-4 py-3 rounded-luxury transition-all duration-300">
+                        Clear All
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentTheme = 'camel';
+        let isDarkMode = false;
+        let soundSettings = {
+            celebration: true,
+            interaction: true,
+            volume: 80
+        };
+
+        // Sound effects (placeholder functions)
+        function playCrystalSound() {
+            if (soundSettings.interaction) {
+                console.log('Crystal ting sound played');
+            }
+        }
+
+        function playSuccessSound() {
+            if (soundSettings.celebration) {
+                console.log('Success sound played');
+            }
+        }
+
+        function playMetalToggleSound() {
+            if (soundSettings.interaction) {
+                console.log('Metal toggle sound played');
+            }
+        }
+
+        // Theme selection
+        function selectTheme(theme) {
+            currentTheme = theme;
+            playCrystalSound();
+            
+            // Remove previous selection
+            document.querySelectorAll('.theme-swatch').forEach(swatch => {
+                swatch.classList.remove('theme-selected');
+            });
+            
+            // Add selection to clicked theme
+            document.querySelector(`[data-theme="${theme}"]`).classList.add('theme-selected');
+            
+            // Update body background
+            updateThemeBackground(theme);
+            
+            // Save to localStorage
+            saveSettings();
+            
+            // Visual feedback
+            document.querySelector(`[data-theme="${theme}"]`).classList.add('pulse-confirm');
+            setTimeout(() => {
+                document.querySelector(`[data-theme="${theme}"]`).classList.remove('pulse-confirm');
+            }, 600);
+        }
+
+        function updateThemeBackground(theme) {
+            const body = document.body;
+            body.classList.remove('gradient-warm', 'gradient-luxury', 'gradient-sophisticated');
+            
+            switch(theme) {
+                case 'camel':
+                    body.classList.add('gradient-warm');
+                    break;
+                case 'navy':
+                    body.classList.add('gradient-sophisticated');
+                    break;
+                case 'burgundy':
+                    body.style.background = 'linear-gradient(135deg, #800020 0%, #9D174D 50%, #BE185D 100%)';
+                    break;
+                case 'charcoal':
+                    body.style.background = 'linear-gradient(135deg, #2C3E50 0%, #34495E 50%, #3A4A5C 100%)';
+                    break;
+            }
+        }
+
+        // Dark mode toggle
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            
+            const darkModeSwitch = document.getElementById('darkModeSwitch');
+            const modeIcon = document.getElementById('modeIcon');
+            
+            if (isDarkMode) {
+                darkModeSwitch.classList.add('active');
+                modeIcon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="white" stroke-width="2" fill="white"/>';
+            } else {
+                darkModeSwitch.classList.remove('active');
+                modeIcon.innerHTML = '<circle cx="12" cy="12" r="5" stroke="#6B7280" stroke-width="2"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="#6B7280" stroke-width="2"/>';
+            }
+            
+            playMetalToggleSound();
+            saveSettings();
+        }
+
+        // Sound toggles
+        function toggleSound(type) {
+            soundSettings[type] = !soundSettings[type];
+            
+            const switchElement = document.getElementById(`${type}Switch`);
+            switchElement.classList.toggle('active', soundSettings[type]);
+            
+            playMetalToggleSound();
+            saveSettings();
+        }
+
+        // Volume control
+        function updateVolume(value) {
+            soundSettings.volume = parseInt(value);
+            document.getElementById('volumeValue').textContent = `${value}%`;
+            saveSettings();
+        }
+
+        // Display name update
+        function updateDisplayName(name) {
+            const welcomeUser = document.getElementById('welcomeUser');
+            const userInitial = document.getElementById('userInitial');
+            
+            welcomeUser.textContent = `Welcome, ${name}`;
+            userInitial.textContent = name.charAt(0).toUpperCase();
+            
+            saveSettings();
+        }
+
+        // Data management
+        function exportTasks() {
+            const tasks = JSON.parse(localStorage.getItem('luxuryTaskManager_tasks') || '[]');
+            const dataStr = JSON.stringify(tasks, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `luxury-tasks-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            playSuccessSound();
+        }
+
+        function showClearConfirmation() {
+            document.getElementById('clearConfirmDialog').classList.remove('hidden');
+        }
+
+        function hideClearConfirmation() {
+            document.getElementById('clearConfirmDialog').classList.add('hidden');
+        }
+
+        function confirmClearTasks() {
+            localStorage.removeItem('luxuryTaskManager_tasks');
+            hideClearConfirmation();
+            playSuccessSound();
+            
+            // Show success feedback
+            const button = event.target;
+            button.textContent = 'Tasks Cleared!';
+            button.classList.add('pulse-confirm');
+            
+            setTimeout(() => {
+                button.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="2"/>
+                        <line x1="10" y1="11" x2="10" y2="17" stroke="currentColor" stroke-width="2"/>
+                        <line x1="14" y1="11" x2="14" y2="17" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                    Clear All Tasks
+                `;
+                button.classList.remove('pulse-confirm');
+            }, 2000);
+        }
+
+        // Settings management
+        function saveSettings() {
+            const settings = {
+                theme: currentTheme,
+                darkMode: isDarkMode,
+                sounds: soundSettings,
+                displayName: document.getElementById('displayName').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('luxuryTaskManager_settings', JSON.stringify(settings));
+        }
+
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('luxuryTaskManager_settings');
+            const userPrefs = localStorage.getItem('luxuryTaskManager_preferences');
+            
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                currentTheme = settings.theme || 'camel';
+                isDarkMode = settings.darkMode || false;
+                soundSettings = settings.sounds || soundSettings;
+                
+                if (settings.displayName) {
+                    document.getElementById('displayName').value = settings.displayName;
+                    updateDisplayName(settings.displayName);
+                }
+            } else if (userPrefs) {
+                // Migrate from old preferences
+                const prefs = JSON.parse(userPrefs);
+                currentTheme = prefs.theme || 'camel';
+                isDarkMode = prefs.darkMode || false;
+                
+                if (prefs.name) {
+                    document.getElementById('displayName').value = prefs.name;
+                    updateDisplayName(prefs.name);
+                }
+            }
+            
+            // Apply loaded settings
+            selectTheme(currentTheme);
+            if (isDarkMode) toggleDarkMode();
+            
+            // Update sound switches
+            document.getElementById('celebrationSwitch').classList.toggle('active', soundSettings.celebration);
+            document.getElementById('interactionSwitch').classList.toggle('active', soundSettings.interaction);
+            document.getElementById('volumeSlider').value = soundSettings.volume;
+            document.getElementById('volumeValue').textContent = `${soundSettings.volume}%`;
+        }
+
+        // Panel management
+        function closeSettings() {
+            const panel = document.getElementById('settingsPanel');
+            const overlay = document.getElementById('settingsOverlay');
+            
+            panel.classList.remove('slide-in-right');
+            panel.classList.add('slide-out-right');
+            overlay.style.display = 'none';
+            
+            setTimeout(() => {
+                window.location.href = 'main_task_management_dashboard.html';
+            }, 400);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSettings();
+            
+            // Show overlay on mobile
+            if (window.innerWidth < 768) {
+                document.getElementById('settingsOverlay').style.display = 'block';
+            }
+        });
+
+        // Handle escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (!document.getElementById('clearConfirmDialog').classList.contains('hidden')) {
+                    hideClearConfirmation();
+                } else {
+                    closeSettings();
+                }
+            }
+        });
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>
